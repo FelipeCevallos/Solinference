@@ -1,41 +1,45 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.23;
+pragma solidity 0.8.20;
 
 import { DSMath } from "../lib/ds-math/src/math.sol";
 
-library Statistics {
-
-    using {add, sub, mul, min, max, imin, imax, wdiv} for uint;
-
-    uint constant WAD = DSMath.WAD;
+contract StatSol  is DSMath {
 
 
     // Calculate the mean of an array of values
     function mean(uint[] memory data) internal pure returns (uint) {
         require(data.length > 0, "Data array is empty");
-        uint sum = DSMath.sum(data);
-        return DSMath.wdiv(sum, data.length * WAD);
-        
-        // uint sum = 0;
-        // for (uint i = 0; i < data.length; i++) {
-        //     sum += data[i];
-        // }
-        // return sum / data.length;
+        uint sum = 0;
+        for (uint i = 0; i < data.length; i++) {
+            sum += data[i];
+        }
+        return (sum / data.length * WAD);
+    }
 
+    function bubbleSort(uint[] memory arr) public pure returns (uint[] memory) {
+        uint n = arr.length;
+        for (uint i = 0; i < n - 1; i++) {
+            for (uint j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                }
+            }
+        }
+        return arr;
     }
 
 
-    // function calculateMedian(uint[] memory data) internal pure returns (uint) {
-    //     require(data.length > 0, "Data array is empty");
-    //     uint[] memory sortedData = sort(data);
-    //     uint middle = sortedData.length / 2;
+    function calculateMedian(uint[] memory data) internal pure returns (uint) {
+        // require(data.length > 0, "Data array is empty");
+        // uint[] memory sortedData = sort(data);
+        // uint middle = sortedData.length / 2;
 
     //     if (sortedData.length % 2 == 0) {
     //         return (sortedData[middle - 1] + sortedData[middle]) / 2;
     //     } else {
     //         return sortedData[middle];
     //     }
-    // }
+    }
 
 
     // function sort(uint[] memory data) internal pure returns (uint[] memory) {
