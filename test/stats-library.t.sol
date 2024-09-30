@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.23;
 
-import { statslibrary } from "../src/statslibrary.sol";
+import { Statistics } from "../src/Statsol.sol";
 
 
-contract statslibraryTest  is statslibrary {
+contract statslibraryTest  is Statistics {
 
     function mean_test() public {
-        assert(statslibrary.test() == 1);
+        assert(Statistics.test() == 1);
     }
 }

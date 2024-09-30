@@ -1,80 +1,87 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.23;
 
-import { DSMath } from "https://github.com/dapphub/ds-math/blob/master/src/math.sol";
+import { DSMath } from "../lib/ds-math/src/math.sol";
 
 library Statistics {
 
-    using DSMath for uint;
+    using {add, sub, mul, min, max, imin, imax, wdiv} for uint;
+
+    uint constant WAD = DSMath.WAD;
+
 
     // Calculate the mean of an array of values
     function mean(uint[] memory data) internal pure returns (uint) {
         require(data.length > 0, "Data array is empty");
-        uint sum = 0;
-        for (uint i = 0; i < data.length; i++) {
-            sum += data[i];
-        }
-        return sum / data.length;
+        uint sum = DSMath.sum(data);
+        return DSMath.wdiv(sum, data.length * WAD);
+        
+        // uint sum = 0;
+        // for (uint i = 0; i < data.length; i++) {
+        //     sum += data[i];
+        // }
+        // return sum / data.length;
+
     }
 
 
-    function calculateMedian(uint[] memory data) internal pure returns (uint) {
-        require(data.length > 0, "Data array is empty");
-        uint[] memory sortedData = sort(data);
-        uint middle = sortedData.length / 2;
+    // function calculateMedian(uint[] memory data) internal pure returns (uint) {
+    //     require(data.length > 0, "Data array is empty");
+    //     uint[] memory sortedData = sort(data);
+    //     uint middle = sortedData.length / 2;
 
-        if (sortedData.length % 2 == 0) {
-            return (sortedData[middle - 1] + sortedData[middle]) / 2;
-        } else {
-            return sortedData[middle];
-        }
-    }
+    //     if (sortedData.length % 2 == 0) {
+    //         return (sortedData[middle - 1] + sortedData[middle]) / 2;
+    //     } else {
+    //         return sortedData[middle];
+    //     }
+    // }
 
 
-    function sort(uint[] memory data) internal pure returns (uint[] memory) {
-        // Implement sorting algorithm (like bubble sort or quicksort)
-        // Sorting is not gas-efficient but may be necessary for median calculation
-        // You can also consider external sorting methods off-chain if the data size is large
-    }
+    // function sort(uint[] memory data) internal pure returns (uint[] memory) {
+    //     // Implement sorting algorithm (like bubble sort or quicksort)
+    //     // Sorting is not gas-efficient but may be necessary for median calculation
+    //     // You can also consider external sorting methods off-chain if the data size is large
+    // }
 
-    // Function to calculate the mean of an array of values
-    function calculateMean(uint[] memory values) public returns (uint) {
-        uint sum = 0;
-        for (uint i = 0; i < values.length; i++) {
-            sum = add(sum, values[i]);
-        }
-        return wdiv(sum, values.length * WAD);  // Mean = sum / number of values
-    }
+    // // Function to calculate the mean of an array of values
+    // function calculateMean(uint[] memory values) public returns (uint) {
+    //     uint sum = 0;
+    //     for (uint i = 0; i < values.length; i++) {
+    //         sum = DSMath.add(sum, values[i]);
+    //     }
+    //     return DSMath.wdiv(sum, values.length * WAD);  // Mean = sum / number of values
+    // }
 
     // Function to calculate the standard deviation of an array of values
-    function calculateStandardDeviation(uint[] memory values) public pure returns (uint) {
-        uint mean = calculateMean(values);
-        uint varianceSum = 0;
+    // function calculateStandardDeviation(uint[] memory values) public pure returns (uint) {
+    //     uint mean = calculateMean(values);
+    //     uint varianceSum = 0;
 
-        // Calculate variance
-        for (uint i = 0; i < values.length; i++) {
-            uint diff = sub(values[i], mean);
-            uint diffSquared = wmul(diff, diff);
-            varianceSum = add(varianceSum, diffSquared);
-        }
+    //     // Calculate variance
+    //     for (uint i = 0; i < values.length; i++) {
+    //         uint diff = DSMath.sub(values[i], mean);
+    //         uint diffSquared = wmul(diff, diff);
+    //         varianceSum = add(varianceSum, diffSquared);
+    //     }
 
-        uint variance = wdiv(varianceSum, values.length * WAD);  // Variance = sum of squares / array size
-        return sqrt(variance);  // Standard Deviation = sqrt(variance)
-    }
+    //     uint variance = wdiv(varianceSum, values.length * WAD);  // Variance = sum of squares / array size
+    //     return sqrt(variance);  // Standard Deviation = sqrt(variance)
+    // }
 
     // Function to calculate z-value
     // z = (proposed mean - sample mean) / (standard deviation / sqrt(array size))
-    function calculateZValue(uint[] memory values, uint proposedMean) public pure returns (uint) {
-        uint sampleMean = calculateMean(values);
-        uint stdDev = calculateStandardDeviation(values);
-        uint arraySize = values.length * WAD;
+    // function calculateZValue(uint[] memory values, uint proposedMean) public pure returns (uint) {
+    //     uint sampleMean = calculateMean(values);
+    //     uint stdDev = calculateStandardDeviation(values);
+    //     uint arraySize = values.length * WAD;
 
-        uint sqrtSize = sqrt(arraySize);  // sqrt(array size)
-        uint stdError = wdiv(stdDev, sqrtSize);  // Standard error = stdDev / sqrt(array size)
+    //     uint sqrtSize = sqrt(arraySize);  // sqrt(array size)
+    //     uint stdError = wdiv(stdDev, sqrtSize);  // Standard error = stdDev / sqrt(array size)
 
-        uint zValue = wdiv(sub(proposedMean, sampleMean), stdError);  // z = (proposedMean - sampleMean) / stdError
-        return zValue;
-    }
+    //     uint zValue = wdiv(sub(proposedMean, sampleMean), stdError);  // z = (proposedMean - sampleMean) / stdError
+    //     return zValue;
+    // }
 
     // Needd to create a floor function that returns the nearest z-value to output the density value
 
