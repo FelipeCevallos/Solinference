@@ -7,15 +7,16 @@ contract StatSol  is DSMath {
 
 
     // Calculate the mean of an array of values
-    function mean(uint[] memory data) internal pure returns (uint) {
+    function mean(uint[] memory data) public pure returns (uint) {
         require(data.length > 0, "Data array is empty");
         uint sum = 0;
         for (uint i = 0; i < data.length; i++) {
-            sum += data[i];
+            sum = DSMath.add(sum, data[i]);
         }
-        return (sum / data.length * WAD);
+        return DSMath.wdiv(sum, data.length * WAD);
     }
 
+    // Sort the array in ascending order
     function bubbleSort(uint[] memory arr) public pure returns (uint[] memory) {
         uint n = arr.length;
         for (uint i = 0; i < n - 1; i++) {
@@ -28,34 +29,39 @@ contract StatSol  is DSMath {
         return arr;
     }
 
-
-    function calculateMedian(uint[] memory data) internal pure returns (uint) {
-        // require(data.length > 0, "Data array is empty");
-        // uint[] memory sortedData = sort(data);
-        // uint middle = sortedData.length / 2;
-
-    //     if (sortedData.length % 2 == 0) {
-    //         return (sortedData[middle - 1] + sortedData[middle]) / 2;
-    //     } else {
-    //         return sortedData[middle];
-    //     }
+    // Calculate the median of an array of values
+    function median(uint[] memory data) public pure returns (uint) {
+        require(data.length > 0, "Data array is empty");
+        uint[] memory sortedData = bubbleSort(data);
+        uint middle = sortedData.length / 2;
+        if (sortedData.length % 2 == 0) {
+            return (sortedData[middle - 1] + sortedData[middle]) / 2;
+        } else {
+            return sortedData[middle];
+            
+        }
     }
 
+    // Calculate the range of an array of values
+    function range(uint[] memory data) public pure returns (uint) {
+        require(data.length > 0, "Data array is empty");
+        uint[] memory sortedarray = bubbleSort(data);
+        return sortedarray[sortedarray.length - 1] - sortedarray[0];
+    }
+    
 
-    // function sort(uint[] memory data) internal pure returns (uint[] memory) {
-    //     // Implement sorting algorithm (like bubble sort or quicksort)
-    //     // Sorting is not gas-efficient but may be necessary for median calculation
-    //     // You can also consider external sorting methods off-chain if the data size is large
-    // }
-
-    // // Function to calculate the mean of an array of values
-    // function calculateMean(uint[] memory values) public returns (uint) {
-    //     uint sum = 0;
-    //     for (uint i = 0; i < values.length; i++) {
-    //         sum = DSMath.add(sum, values[i]);
-    //     }
-    //     return DSMath.wdiv(sum, values.length * WAD);  // Mean = sum / number of values
-    // }
+    // Calculate the mode of an array of values
+    function mode( uint256[] memory data) public pure returns (uint256) {
+        uint256 max = 0;
+        uint256 mode = 0;
+        for (uint256 i = 0; i < data.length; i++) {
+            if (data[i] > max) {
+                max = data[i];
+                mode = i;
+            }
+        }
+        return mode;
+    }
 
     // Function to calculate the standard deviation of an array of values
     // function calculateStandardDeviation(uint[] memory values) public pure returns (uint) {
@@ -91,37 +97,6 @@ contract StatSol  is DSMath {
 
 
 
-
-    //THE FOLLOWING IS TESTING CODE
-    // function mean( uint256[] memory values)  returns (uint256) {
-    //     return (values.sum() / values.length);
-    // }
-
-    // function median( uint256[] memory values)  returns (uint256) {
-    //     values.sort();
-    //     if (values.length % 2 == 0) {
-    //         return (values[values.length / 2] + values[values.length / 2 - 1]) / 2;
-    //     } else {
-    //         return values[values.length / 2];
-    //     }
-    // }
-
-    // function mode( uint256[] memory values)  returns (uint256) {
-    //     uint256 max = 0;
-    //     uint256 mode = 0;
-    //     for (uint256 i = 0; i < values.length; i++) {
-    //         if (values[i] > max) {
-    //             max = values[i];
-    //             mode = i;
-    //         }
-    //     }
-    //     return mode;
-    // }
-
-    // function range( uint256[] memory values)  returns (uint256) {
-    //     values.sort();
-    //     return values[values.length - 1] - values[0];
-    // }
 
     // fucntion variance (uint256[] memory values)  returns (uint256) {
     //     uint256 mean = mean(values);
