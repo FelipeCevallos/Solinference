@@ -51,17 +51,17 @@ contract StatSol  is DSMath {
     
 
     // Calculate the mode of an array of values
-    function mode( uint256[] memory data) public pure returns (uint256) {
-        uint256 max = 0;
-        uint256 mode = 0;
-        for (uint256 i = 0; i < data.length; i++) {
-            if (data[i] > max) {
-                max = data[i];
-                mode = i;
-            }
-        }
-        return mode;
-    }
+    // function mode( uint256[] memory data) public pure returns (uint256) {
+    //     uint256 max = 0;
+    //     uint256 mode = 0;
+    //     for (uint256 i = 0; i < data.length; i++) {
+    //         if (data[i] > max) {
+    //             max = data[i];
+    //             mode = i;
+    //         }
+    //     }
+    //     return mode;
+    // }
 
     // Function to calculate the standard deviation of an array of values
     // function calculateStandardDeviation(uint[] memory values) public pure returns (uint) {
