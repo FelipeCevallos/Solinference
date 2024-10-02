@@ -3,11 +3,11 @@ pragma solidity 0.8.20;
 
 import { DSMath } from "../lib/ds-math/src/math.sol";
 
-contract StatSol  is DSMath {
+contract Solinference  is DSMath {
 
 
     // Calculate the mean of an array of values
-    function mean(uint[] memory data) public pure returns (uint) {
+    function mean(uint[] memory data) public pure returns (uint256) {
         require(data.length > 0, "Data array is empty");
         uint sum = 0;
         for (uint i = 0; i < data.length; i++) {
@@ -17,7 +17,7 @@ contract StatSol  is DSMath {
     }
 
     // Sort the array in ascending order
-    function bubbleSort(uint[] memory arr) public pure returns (uint[] memory) {
+    function bubbleSort(uint[] memory arr) public pure returns (uint256[] memory) {
         uint n = arr.length;
         for (uint i = 0; i < n - 1; i++) {
             for (uint j = 0; j < n - i - 1; j++) {
@@ -30,7 +30,7 @@ contract StatSol  is DSMath {
     }
 
     // Calculate the median of an array of values
-    function median(uint[] memory data) public pure returns (uint) {
+    function median(uint[] memory data) public pure returns (uint256) {
         require(data.length > 0, "Data array is empty");
         uint[] memory sortedData = bubbleSort(data);
         uint middle = sortedData.length / 2;
@@ -43,25 +43,73 @@ contract StatSol  is DSMath {
     }
 
     // Calculate the range of an array of values
-    function range(uint[] memory data) public pure returns (uint) {
+    function range(uint[] memory data) public pure returns (uint256) {
         require(data.length > 0, "Data array is empty");
         uint[] memory sortedarray = bubbleSort(data);
         return sortedarray[sortedarray.length - 1] - sortedarray[0];
     }
     
-
     // Calculate the mode of an array of values
-    // function mode( uint256[] memory data) public pure returns (uint256) {
-    //     uint256 max = 0;
-    //     uint256 mode = 0;
-    //     for (uint256 i = 0; i < data.length; i++) {
-    //         if (data[i] > max) {
-    //             max = data[i];
-    //             mode = i;
-    //         }
-    //     }
-    //     return mode;
-    // }
+    function mode(uint256[] memory data) public pure returns (uint256[] memory) {
+        uint256 len = data.length;
+        require(len > 0, "Array is empty");
+        
+        // Temporary arrays for unique numbers and their frequencies
+        uint256[] memory uniqueNumbers = new uint256[](len);
+        uint256[] memory frequencies = new uint256[](len);
+        uint256 uniqueCount = 0;
+        uint256 highestCount = 0;
+        
+        // Loop through the array and count occurrences
+        for (uint256 i = 0; i < len; i++) {
+            uint256 num = data[i];
+            bool found = false;
+            
+            // Check if the number has been encountered before
+            for (uint256 j = 0; j < uniqueCount; j++) {
+                if (uniqueNumbers[j] == num) {
+                    frequencies[j]++;
+                    found = true;
+                    if (frequencies[j] > highestCount) {
+                        highestCount = frequencies[j];
+                    }
+                    break;
+                }
+            }
+            
+            // If the number is unique, add it to the uniqueNumbers array
+            if (!found) {
+                uniqueNumbers[uniqueCount] = num;
+                frequencies[uniqueCount] = 1;
+                if (1 > highestCount) {
+                    highestCount = 1;
+                }
+                uniqueCount++;
+            }
+        }
+        
+        // Count how many numbers have the highest frequency
+        uint256 resultCount = 0;
+        for (uint256 i = 0; i < uniqueCount; i++) {
+            if (frequencies[i] == highestCount) {
+                resultCount++;
+            }
+        }
+        
+        // Create a new array to store the result
+        uint256[] memory result = new uint256[](resultCount);
+        uint256 index = 0;
+        
+        // Populate the result array with numbers that have the highest frequency
+        for (uint256 i = 0; i < uniqueCount; i++) {
+            if (frequencies[i] == highestCount) {
+                result[index] = uniqueNumbers[i];
+                index++;
+            }
+        }
+        
+        return result;
+    }
 
     // Function to calculate the standard deviation of an array of values
     // function calculateStandardDeviation(uint[] memory values) public pure returns (uint) {

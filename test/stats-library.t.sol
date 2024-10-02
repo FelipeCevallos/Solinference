@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { StatSol } from "../src/Statsol.sol";
+import { Solinference } from "../src/Solinference.sol";
 
 
-contract statslibraryTest  is StatSol {
+contract statslibraryTest  is Solinference {
 
     function mean_test(uint[] memory values) public pure returns (uint) {
-        // assert(StatSol.mean() == 1);
+        // assert(Solinference.mean() == 1);
     }
 }
