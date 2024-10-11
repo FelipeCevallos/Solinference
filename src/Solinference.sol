@@ -111,64 +111,59 @@ contract Solinference  is DSMath {
         return result;
     }
 
-    // Function to calculate the standard deviation of an array of values
-    // function calculateStandardDeviation(uint[] memory values) public pure returns (uint) {
-    //     uint mean = calculateMean(values);
-    //     uint varianceSum = 0;
+    // Calculate the variance of an array of values
+    function variance(uint[] memory values) public pure returns (uint256) {
+        require(values.length > 0, "Array is empty");
+        uint256 meanValue = mean(values);
+        uint256 sumOfSquaredDifferences = 0;
 
-    //     // Calculate variance
-    //     for (uint i = 0; i < values.length; i++) {
-    //         uint diff = DSMath.sub(values[i], mean);
-    //         uint diffSquared = wmul(diff, diff);
-    //         varianceSum = add(varianceSum, diffSquared);
-    //     }
+        for (uint i = 0; i < values.length; i++) {
+            uint256 difference = DSMath.sub(values[i], meanValue);
+            uint256 squaredDifference = DSMath.wmul(difference, difference);
+            sumOfSquaredDifferences = DSMath.add(sumOfSquaredDifferences, squaredDifference);
+        }
+        return DSMath.wdiv(sumOfSquaredDifferences, values.length * WAD);
+    }
 
-    //     uint variance = wdiv(varianceSum, values.length * WAD);  // Variance = sum of squares / array size
-    //     return sqrt(variance);  // Standard Deviation = sqrt(variance)
-    // }
+    // Custom square root function
+    function sqrt(uint x) internal pure returns (uint y) {
+        uint z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
+    }
+
+    // Calculate the standard deviation of an array of values
+    function stdDeviation(uint[] memory values) public pure returns (uint) {
+        uint _variance = variance(values);
+        return sqrt(_variance); 
+    }
+    // Function to round to the nearest integer
+    function roundToNearestInteger(uint256 number) public pure returns (uint256) {
+        // If the number is positive
+        if (number >= 0) {
+            return (number + 5 * 10**17) / 10**18 * 10**18;
+        }
+        // If the number is negative
+        else {
+            return (number - 5 * 10**17) / 10**18 * 10**18;
+        }
+    }
 
     // Function to calculate z-value
     // z = (proposed mean - sample mean) / (standard deviation / sqrt(array size))
-    // function calculateZValue(uint[] memory values, uint proposedMean) public pure returns (uint) {
-    //     uint sampleMean = calculateMean(values);
-    //     uint stdDev = calculateStandardDeviation(values);
-    //     uint arraySize = values.length * WAD;
+    function zValue(uint[] memory values, uint proposedMean) public pure returns (uint) {
+        uint sampleMean = mean(values);
+        uint stdDev = stdDeviation(values);
+        uint arraySize = values.length * WAD;
 
-    //     uint sqrtSize = sqrt(arraySize);  // sqrt(array size)
-    //     uint stdError = wdiv(stdDev, sqrtSize);  // Standard error = stdDev / sqrt(array size)
+        uint sqrtSize = sqrt(arraySize);  // sqrt(array size)
+        uint stdError = wdiv(stdDev, sqrtSize);  // Standard error = stdDev / sqrt(array size)
 
-    //     uint zValue = wdiv(sub(proposedMean, sampleMean), stdError);  // z = (proposedMean - sampleMean) / stdError
-    //     return zValue;
-    // }
-
-    // Needd to create a floor function that returns the nearest z-value to output the density value
-
-
-
-
-    // fucntion variance (uint256[] memory values)  returns (uint256) {
-    //     uint256 mean = mean(values);
-    //     uint256 sum = 0;
-    //     for (uint256 i = 0; i < values.length; i++) {
-    //         sum += (values[i] - mean) * (values[i] - mean);
-    //     }
-    //     return sum / (values.length - 1);
-    // }
-
-    // function pvar( uint256[] memory values)  returns (uint256) {
-    //     uint256 mean = mean(values);
-    //     uint256 sum = 0;
-    //     for (uint256 i = 0; i < values.length; i++) {
-    //         sum += (values[i] - mean) * (values[i] - mean);
-    //     }
-    //     return sum / values.length;
-    // }
-
-    // function pstdev( uint256[] memory values)  returns (uint256) {
-    //     return sqrt(pvar(values));
-    // }
-
-    // function stdev( uint256[] memory values)  returns (uint256) {
-    //     return sqrt(var(values));
-    // }
+        uint _zValue = wdiv(sub(proposedMean, sampleMean), stdError);  // z = (proposedMean - sampleMean) / stdError
+        uint ZValue = roundToNearestInteger(_zValue);
+        return ZValue;
+    }
 }
