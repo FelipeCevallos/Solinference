@@ -26,13 +26,13 @@ import "./StatsLibrary.sol";
 contract MyStatsContract {
     using StatsLibrary for uint[];
 
-    function getStats(uint[] memory data) public view returns (uint mean, uint median, uint mode, uint range, uint variance, uint stddev) {
-        mean = data.mean();
-        median = data.median();
-        mode = data.mode();
-        range = data.range();
-        variance = data.variance();
-        stddev = data.standardDeviation();
+    function getStats(uint[] memory data) public view returns (uint _mean, uint _median, uint _mode, uint _range, uint _variance, uint _stdDev) {
+        _mean = data.mean();
+        _median = data.median();
+        _mode = data.mode();
+        _range = data.range();
+        _variance = data.variance();
+        _stdDev = data.stdDev();
     }
 
     // This function needs to be corrected, it is not working

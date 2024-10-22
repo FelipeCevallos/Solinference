@@ -713,10 +713,4 @@ contract ZTableMapping {
         zTable[348] = 9997; // z = 3.48 -> 0.9997
         zTable[349] = 9998; // z = 3.49 -> 0.9998
     }
-
-    // Function to retrieve the value from the zTable
-    // The input will be the full z-value scaled by 100, e.g., -2.35 -> -235
-    function getZTableValue(int phi) public view returns (int) {
-        return zTable[phi];
-    }
 }
