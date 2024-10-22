@@ -1,6 +1,8 @@
 BETA
 This code is in Beta, it is not ready for production
 
+
+
 Solidity Statistics Library
 This Solidity library provides a set of statistical functions that can be used for performing basic descriptive statistics as well as statistical inference on-chain. The library is designed to operate efficiently with Solidity’s constraints and offers a variety of common statistical functions.
 
@@ -18,6 +20,28 @@ Phi Function (Φ): Calculates the cumulative distribution function (CDF) of the 
 How It Works
 The library is built with Solidity's constraints in mind, such as gas limits and the absence of floating-point arithmetic. It ensures compatibility by leveraging fixed-point math for handling decimal values and makes use of efficient algorithms to perform computations. For this we use DS-Math by DappHub in order to operate with floating-point arithmetic to calculate the Phi function, which is then used to calculate the Z-value of normal distribution. 
 
+'''solidity
+import "./StatsLibrary.sol";
+
+contract MyStatsContract {
+    using StatsLibrary for uint[];
+
+    function getStats(uint[] memory data) public view returns (uint mean, uint median, uint mode, uint range, uint variance, uint stddev) {
+        mean = data.mean();
+        median = data.median();
+        mode = data.mode();
+        range = data.range();
+        variance = data.variance();
+        stddev = data.standardDeviation();
+    }
+
+    function getPhiValue(int z) public view returns (uint phi) {
+        phi = StatsLibrary.phi(z);
+    }
+}
+'''
+
+
 Phi Function for Statistical Inference
 The Phi function in this library calculates the CDF of the standard normal distribution. It allows users to compute the probability that a value drawn from a normal distribution is less than or equal to a specified z value. This is particularly useful in hypothesis testing and other statistical inference scenarios.
 
@@ -27,6 +51,8 @@ This library is compatible with Solidity >=0.8.0, leveraging the built-in overfl
 Installation
 Clone this repository.
 Import the StatsLibrary.sol into your Solidity project.
+
+
 Future Work
 We aim to continue improving the library by adding more advanced statistical functions and optimizing gas usage for larger datasets.
 

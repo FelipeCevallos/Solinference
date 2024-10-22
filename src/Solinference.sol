@@ -155,14 +155,16 @@ contract Solinference  is DSMath {
     // Function to calculate z-value
     // z = (proposed mean - sample mean) / (standard deviation / sqrt(array size))
     function zValue(uint[] memory values, uint proposedMean) public pure returns (uint) {
+        require(values.length > 0, "Data array must not be empty");
         uint sampleMean = mean(values);
         uint stdDev = stdDeviation(values);
+        require(stdDev != 0, "Standard deviation cannot be zero");
         uint arraySize = values.length * WAD;
 
         uint sqrtSize = sqrt(arraySize);  // sqrt(array size)
-        uint stdError = wdiv(stdDev, sqrtSize);  // Standard error = stdDev / sqrt(array size)
-
-        uint _zValue = wdiv(sub(proposedMean, sampleMean), stdError);  // z = (proposedMean - sampleMean) / stdError
+        uint stdError = wdiv(stdDev, sqrtSize) * WAD;  // Standard error = stdDev / sqrt(array size)
+        uint numerator = sub(proposedMean, sampleMean);
+        uint _zValue = wdiv(numerator, stdError);  // z = (proposedMean - sampleMean) / stdError
         uint ZValue = roundToNearestInteger(_zValue);
         return ZValue;
     }
