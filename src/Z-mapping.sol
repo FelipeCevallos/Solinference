@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 contract ZTableMapping {
 
     // Define a mapping where the key is the scaled phi value (phi * 100)
-    mapping(int => uint) public zTable;
+    mapping(int => int) public zTable;
 
     constructor() {
         zTable[-349] = 2;    // z = -3.49 -> 0.0002
@@ -716,7 +716,7 @@ contract ZTableMapping {
 
     // Function to retrieve the value from the zTable
     // The input will be the full z-value scaled by 100, e.g., -2.35 -> -235
-    function getZTableValue(int phi) public view returns (uint) {
+    function getZTableValue(int phi) public view returns (int) {
         return zTable[phi];
     }
 }
