@@ -46,7 +46,7 @@ contract MyStatsContract {
 Phi Function for Statistical Inference
 The Phi function in this library calculates the CDF of the standard normal distribution. It allows users to compute the probability that a value drawn from a normal distribution is less than or equal to a specified z value. This is particularly useful in hypothesis testing, confidence intervals, the pricing of financial assets (i.e. Black-Scholes), and other statistical inference scenarios.
 
-If a given dataset is normally distributed(X ~ N(μ, σ^2)), then we normalize the data by converting it into a Standard Normal Distribution using the formula z = (X - μ) / σ. This allows us to use the Z-table to find the Phi value, which we can then use to calculate the probability of the value being within the z-value.
+If a given dataset is normally distributed(X ~ N(μ, σ^2)), then we normalize the data by converting it into a Standard Normal Distribution (N(0,1)) using the formula z = (X - μ) / σ. This allows us to use the Z-table to find the Phi value, which we can then use to calculate the probability of the value being within the z-value.
 P(X ≤ x) = Φ((x - μ) / σ)
 
 Solidity Version

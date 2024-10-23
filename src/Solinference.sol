@@ -5,7 +5,11 @@ import { DSMath } from "../lib/ds-math/src/math.sol";
 import { ZTableMapping } from "./Z-mapping.sol";
 
 contract Solinference  is DSMath {
+    ZTableMapping private zTableInstance;
 
+    constructor(address _zTableMappingAddress) {
+        zTableInstance = ZTableMapping(_zTableMappingAddress);
+    }
 
     // Calculate the mean of an array of integer values
     function mean(int[] memory data) public pure returns (int) {
@@ -158,7 +162,7 @@ contract Solinference  is DSMath {
 
     // Function to calculate z-value
     // z = (proposed mean - sample mean) / (standard deviation / sqrt(array size))
-    function zValue(int[] memory values, int proposedMean) public pure returns (int) {
+    function zValue(int[] memory values, int _proposedMean) public pure returns (int) {
         require(values.length > 0, "Data array must not be empty");
         int sampleMean = mean(values);
         uint _stdDev = uint(stdDev(values));
@@ -167,7 +171,7 @@ contract Solinference  is DSMath {
 
         int sqrtSize = int(sqrt(arraySize));  // sqrt(array size)
         int stdError = int(_stdDev) * int(WAD) / sqrtSize;  // Standard error = stdDev / sqrt(array size)
-        int numerator = (proposedMean - sampleMean) * int(WAD);
+        int numerator = (_proposedMean - sampleMean) * int(WAD);
         int _zValue = numerator / stdError;  // z = (proposedMean - sampleMean) / stdError
         int ZValue = roundToNearestInteger(_zValue);
         return ZValue;
@@ -175,6 +179,9 @@ contract Solinference  is DSMath {
 
     // Function to retrieve the value from the zTable
     // The input will be the full z-value scaled by 100, e.g., -2.35 -> -235
-    function getZTableValue(int phi) public view returns (int) {
+    function getProbability(int[] memory values, int proposedMean) public view returns (int) {
+        int phi = zValue(values, proposedMean);
+        int prob = zTableInstance.zTable(phi);
+        return prob;
     }
 }

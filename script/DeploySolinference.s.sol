@@ -7,11 +7,9 @@ import {Solinference} from "../src/Solinference.sol";
 
 contract DeploySolinference is Script {
 
-    function run() external returns (Solinference) {
+    function run() public returns (Solinference) {
         vm.startBroadcast();
-
-        Solinference solInference = new Solinference();
-
+        Solinference solInference = new Solinference(msg.sender);
         vm.stopBroadcast();
         return solInference;
     }
